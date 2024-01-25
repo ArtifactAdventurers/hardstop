@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core;
 
-import dev.gruff.hardstop.api.RavenContainer;
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSContainer;
+import dev.gruff.hardstop.api.HSClass;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -16,13 +16,13 @@ public class RavenStats {
     }
 
     private int[] totals;
-    private Map<RavenContainer,int[]> containerStats=new HashMap<>();
+    private Map<HSContainer,int[]> containerStats=new HashMap<>();
     private Map<String,int[]> packageStats=new HashMap<>();
     public RavenStats() {
         StatsElement[] labels=StatsElement.values();
         totals=new int[labels.length];
     }
-    public void update(RavenClass clazz) {
+    public void update(HSClass clazz) {
 
         StatsElement[] labels = StatsElement.values();
         int[] record = new int[labels.length];
@@ -34,7 +34,7 @@ public class RavenStats {
        record[StatsElement.literals.ordinal()]=clazz.literals().size();
 
         // update container
-        RavenContainer container=clazz.container();
+        HSContainer container=clazz.container();
         int[] cstats=containerStats.computeIfAbsent(container, f ->  new int[labels.length]);
         addStats(cstats,record);
 

@@ -1,11 +1,13 @@
 package dev.gruff.hardstop.api;
 
+import java.util.Set;
+
 public interface HSStore {
-    RavenDependency resolveDependency(RavenCoordinate rc);
 
-    RavenPOM resolvePom(RavenCoordinate pdep);
+    HSComponentMetaSet meta(HSCoordinate pdep);
 
-    public void addSource(RavenArtifactSource as);
+    HSComponentSet components(HSCoordinate rc);
 
+    HSComponentSet components(String groupId,String artifactId,String version);
 
 }

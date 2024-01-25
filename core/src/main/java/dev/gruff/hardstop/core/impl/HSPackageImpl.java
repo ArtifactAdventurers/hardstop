@@ -1,13 +1,13 @@
 package dev.gruff.hardstop.core.impl;
 
 import dev.gruff.hardstop.api.HSPackage;
-import dev.gruff.hardstop.api.RavenContainer;
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSContainer;
+import dev.gruff.hardstop.api.HSClass;
 
 
 import java.util.*;
 
-public class RavenPackageImpl implements HSPackage {
+public class HSPackageImpl implements HSPackage {
 
     private final Map<String, HSClassImpl> classes=new TreeMap<>();
 
@@ -16,7 +16,7 @@ public class RavenPackageImpl implements HSPackage {
     private HSContainerImpl container;
 
 
-    RavenPackageImpl(HSContainerImpl container, String name) {
+    HSPackageImpl(HSContainerImpl container, String name) {
         this.name = name;
         this.container=container;
 
@@ -24,7 +24,7 @@ public class RavenPackageImpl implements HSPackage {
 
 
     @Override
-    public RavenContainer container() {
+    public HSContainer container() {
         return container;
     }
 
@@ -39,7 +39,7 @@ public class RavenPackageImpl implements HSPackage {
     }
 
     @Override
-    public Collection<RavenClass> classes() {
+    public Collection<HSClass> classes() {
         return Collections.unmodifiableCollection(classes.values());
     }
 

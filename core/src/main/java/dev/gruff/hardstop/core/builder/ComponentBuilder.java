@@ -1,9 +1,9 @@
 package dev.gruff.hardstop.core.builder;
 
 
-import dev.gruff.hardstop.core.impl.RavenPOMImpl;
+import dev.gruff.hardstop.core.impl.HSPOMImpl;
 import dev.gruff.hardstop.core.internal.POMReader;
-import dev.gruff.hardstop.api.RavenComponent;
+import dev.gruff.hardstop.api.HSComponent;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -27,7 +27,7 @@ public class ComponentBuilder {
      * @param pom
      * @return
      */
-    public RavenComponent read(File pom) {
+    public HSComponent read(File pom) {
 
         if(!pom.exists()) throw new RuntimeException("pom is null");
         if(!pom.isFile()) throw new RuntimeException(pom.getAbsolutePath()+" is not a file");
@@ -35,7 +35,7 @@ public class ComponentBuilder {
         POMReader pr= null;
         try {
             pr = new POMReader();
-           RavenPOMImpl p=pr.read(pom);
+           HSPOMImpl p=pr.read(pom);
             return null;
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);

@@ -4,8 +4,8 @@ import dev.gruff.hardstop.core.impl.ClassFileReaderImpl;
 import dev.gruff.hardstop.core.impl.HSClassImpl;
 import dev.gruff.hardstop.core.impl.HSComponentImpl;
 import dev.gruff.hardstop.core.internal.ParseException;
-import dev.gruff.hardstop.api.RavenComponent;
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSComponent;
+import dev.gruff.hardstop.api.HSClass;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class ComponentLoader {
         return this;
     }
 
-    public RavenComponent build() throws IOException {
+    public HSComponent build() throws IOException {
 
 
         HSComponentImpl m = new HSComponentImpl();
@@ -221,12 +221,12 @@ public class ComponentLoader {
         return this;
     }
 
-    public static RavenClass readClass(InputStream is) throws IOException {
+    public static HSClass readClass(InputStream is) throws IOException {
         return new ClassFileReaderImpl(false).parse(is);
     }
 
 
-    public static RavenClass readClass(Class cl) throws IOException {
+    public static HSClass readClass(Class cl) throws IOException {
         String rc=cl.getCanonicalName();
         rc=rc.replace(".","/");
         rc="/"+rc+".class";

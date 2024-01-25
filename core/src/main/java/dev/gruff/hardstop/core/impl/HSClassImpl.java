@@ -3,14 +3,14 @@ package dev.gruff.hardstop.core.impl;
 import dev.gruff.hardstop.api.clazz.AccessFlagInspector;
 import dev.gruff.hardstop.core.JavaVersionInspector;
 import dev.gruff.hardstop.core.internal.ConstantPool;
-import dev.gruff.hardstop.api.RavenContainer;
+import dev.gruff.hardstop.api.HSContainer;
 import dev.gruff.hardstop.core.internal.Attributes;
 import dev.gruff.hardstop.core.internal.Utils;
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 
 import java.util.*;
 
-public class HSClassImpl implements RavenClass {
+public class HSClassImpl implements HSClass {
 
     int minor;
     int major;
@@ -37,13 +37,13 @@ public class HSClassImpl implements RavenClass {
     }
 
     @Override
-    public Collection<RavenClass.Field> fields() {
+    public Collection<HSClass.Field> fields() {
         return Collections.unmodifiableCollection( fields.values());
 
     }
 
     @Override
-    public Collection<RavenClass.Method> methods() {
+    public Collection<HSClass.Method> methods() {
         return Collections.unmodifiableCollection(methods.values());
     }
 
@@ -64,7 +64,7 @@ public class HSClassImpl implements RavenClass {
     }
 
     @Override
-    public RavenClass.Field field(String reference) {
+    public HSClass.Field field(String reference) {
         return fields.get(reference);
     }
 
@@ -79,7 +79,7 @@ public class HSClassImpl implements RavenClass {
     }
 
     @Override
-    public RavenClass.Method method(String ref) {
+    public HSClass.Method method(String ref) {
         return methods.get(ref);
     }
 
@@ -163,7 +163,7 @@ public class HSClassImpl implements RavenClass {
     }
 
     @Override
-    public RavenContainer container() {
+    public HSContainer container() {
         return container;
     }
 
@@ -179,7 +179,7 @@ public class HSClassImpl implements RavenClass {
     }
 
 
-    public class Field implements RavenClass.Field{
+    public class Field implements HSClass.Field{
         public int access_flags;
         public int name_index;
         public int descriptor_index;
@@ -209,7 +209,7 @@ public class HSClassImpl implements RavenClass {
         }
     }
 
-    public class AttributeImpl implements RavenClass.Attribute {
+    public class AttributeImpl implements HSClass.Attribute {
 
         public int attribute_name_index;
         public long attribute_length;
@@ -220,7 +220,7 @@ public class HSClassImpl implements RavenClass {
         }
     }
 
-    public  class Method implements RavenClass.Method{
+    public  class Method implements HSClass.Method{
 
         int access_flags;
         int name_index;

@@ -1,12 +1,12 @@
 package dev.gruff.hardstop.core;
 
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class PublicSignatureComparitor {
-    public static void compare(RavenClass first, RavenClass second) {
+    public static void compare(HSClass first, HSClass second) {
 
         List<String> errors=new LinkedList<>();
 

@@ -3,11 +3,11 @@ package dev.gruff.hardstop.core.builder;
 
 
 import dev.gruff.hardstop.core.impl.RavenPropertySetImpl;
-import dev.gruff.hardstop.core.impl.RavenStoreImpl;
+import dev.gruff.hardstop.core.impl.HSStoreImpl;
 import dev.gruff.hardstop.core.internal.POMFileParser;
 import dev.gruff.hardstop.api.HSStore;
-import dev.gruff.hardstop.api.RavenCoordinate;
-import dev.gruff.hardstop.api.RavenPOM;
+import dev.gruff.hardstop.api.HSCoordinate;
+import dev.gruff.hardstop.api.HSComponentMeta;
 import dev.gruff.hardstop.api.RavenPropertySet;
 
 
@@ -24,7 +24,7 @@ public class POMLoader {
 
         private List<File> fileRoots = new LinkedList<>();
         private Properties presetProperties = new Properties();
-
+        private boolean trace=false;
 
 
         public Config addProperty(String key, String value) {
@@ -58,7 +58,7 @@ public class POMLoader {
             return this;
         }
 
-        public RavenPOM load(File pom) {
+        public HSComponentMeta load(File pom) {
 
             if (pom == null) throw new RuntimeException("pom is null");
             if (!pom.exists()) throw new RuntimeException("pom does not exist [" + pom.getAbsolutePath() + "]");
@@ -77,21 +77,28 @@ public class POMLoader {
 
         private POMFileParser configParser() {
 
-            HSStore store = new RavenStoreImpl();
+            HSStoreImpl store = new HSStoreImpl();
+            store.trace=trace;
+
             if (!excludeRemoteCache) store.addSource(new MavenRepoSource());
-            //if (!excludeLocalCache) store.addSource(new RavenLocalMavenSource());
+            if (!excludeLocalCache) store.addSource(new LocalMavenCache());
             for(File p:fileRoots) {
                 store.addSource(new MavenProjectSource(p));
             }
-            return new POMFileParser(store);
+            return new POMFileParser(store,true,trace);
 
 
         }
 
-        public RavenPOM fileOnly(File f) {
-            HSStore rs=new RavenStoreImpl();
-            POMFileParser p=new POMFileParser(rs);
+        public HSComponentMeta fileOnly(File f) {
+            HSStore rs=new HSStoreImpl();
+            POMFileParser p=new POMFileParser(rs,false,trace);
             return p.parse(f);
+        }
+
+        public Config trace(boolean b) {
+            this.trace=b;
+            return this;
         }
     }
 
@@ -101,7 +108,7 @@ public class POMLoader {
 
     private RavenPropertySet props = new RavenPropertySetImpl();
 
-    private Map<RavenCoordinate, RavenPOM> localPOMs = new HashMap<>();
+    private Map<HSCoordinate, HSComponentMeta> localPOMs = new HashMap<>();
 
 
     private POMLoader() {

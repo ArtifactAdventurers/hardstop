@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core;
 
 import dev.gruff.hardstop.core.builder.ComponentLoader;
-import dev.gruff.hardstop.api.RavenComponent;
+import dev.gruff.hardstop.api.HSComponent;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -15,7 +15,7 @@ public class TestModel {
 
         File f=new File("target/test-classes/testdata");
         ComponentLoader b=new ComponentLoader();
-                RavenComponent model=b.addRoot(f)
+                HSComponent model=b.addRoot(f)
                         .verbose(true)
                 .build();
 

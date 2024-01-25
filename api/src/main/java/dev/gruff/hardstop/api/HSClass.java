@@ -6,7 +6,7 @@ import dev.gruff.hardstop.api.clazz.AccessFlagInspector;
 import java.util.Collection;
 import java.util.Set;
 
-public interface RavenClass {
+public interface HSClass {
 
 
   Set<AccessFlagInspector.ClassFlag> accessFlags();
@@ -24,7 +24,7 @@ public interface RavenClass {
     boolean isInnerClass();
     Collection<String> literals();
 
-    RavenContainer container();
+    HSContainer container();
 
     public String compilerVersion();
 

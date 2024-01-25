@@ -2,7 +2,7 @@ package dev.gruff.hardstop.core.internal;
 
 import dev.gruff.hardstop.api.*;
 import dev.gruff.hardstop.core.impl.HSCoordinateImpl;
-import dev.gruff.hardstop.core.impl.RavenPOMImpl;
+import dev.gruff.hardstop.core.impl.HSPOMImpl;
 import dev.gruff.hardstop.core.impl.RavenPropertySetImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -13,12 +13,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 public class POMFileParser {
 
     private static DocumentBuilderFactory dbf;
+    private  boolean resolveParent=false;
     private DocumentBuilder db;
 
    static {
@@ -28,10 +30,16 @@ public class POMFileParser {
    }
 
     private HSStore store;
+   private boolean trace=false;
 
-    public POMFileParser(HSStore store) {
+   private void trace(String s) {
+       if(trace) System.out.println(s);
+   }
+    public POMFileParser(HSStore store,boolean resolveParent, boolean trace) {
 
         this.store=store;
+        this.trace=trace;
+        this.resolveParent=resolveParent;
 
         try {
             db = dbf.newDocumentBuilder();
@@ -80,7 +88,7 @@ public class POMFileParser {
         return t[0];
     }
 
-    private static RavenPropertySet loadProps(RavenPOM owner, Element node) {
+    private static RavenPropertySet loadProps(HSComponentMeta owner, Element node) {
 
         RavenPropertySet  results=new RavenPropertySetImpl();
         List<Element> kids=getKids(node,null);
@@ -95,7 +103,7 @@ public class POMFileParser {
     }
 
 
-    private static RavenCoordinate getCoords(RavenPropertySet props, Element e) {
+    private static HSCoordinate getCoords(RavenPropertySet props, Element e) {
 
         String g=null;
         String a=null;
@@ -117,7 +125,7 @@ public class POMFileParser {
         String finalA = a;
         String finalG = g;
         String finalV = v;
-        return new HSCoordinateImpl(finalA, finalG, finalV);
+        return new HSCoordinateImpl(finalG, finalA, finalV);
 
     }
 
@@ -128,16 +136,18 @@ public class POMFileParser {
         if(kids.isEmpty()) return null;
         return kids.get(0);
     }
-    public RavenPOM parse(File pom) {
+    public HSComponentMeta parse(File pom) {
+
 
         if(pom==null) throw new RuntimeException("pom is null");
+        trace("parse "+pom.getAbsolutePath());
         if(!pom.exists()) throw new RuntimeException("pom does not exist ["+pom.getAbsolutePath()+"]");
         if(!pom.isFile())  throw new RuntimeException("pom is not a file ["+pom.getAbsolutePath()+"]");
 
         // load pom as XML file ...
         Document pomDoc = loadXML(pom);
         if(pomDoc==null) {
-
+            trace("no xml document found");
             return null;
         }
 
@@ -146,6 +156,7 @@ public class POMFileParser {
         Element top = pomDoc.getDocumentElement();
         top.normalize();
         if (!top.getNodeName().equals("project")) {
+            trace("bad xml format - no project tag");
             return null;
         }
 
@@ -153,7 +164,7 @@ public class POMFileParser {
         // read any properties
         Element properties=getSingleElement(top,"properties");
 
-        RavenPOMImpl rp = new RavenPOMImpl(pom);
+        HSPOMImpl rp = new HSPOMImpl(new FileArtifactRef(pom));
         rp.properties=loadProps(rp,properties);
 
         // load coordinates
@@ -162,26 +173,41 @@ public class POMFileParser {
         // if so then it provides properties, profiles and
         // default values for coords.
 
-        RavenPOM parentPom=null;
+        HSComponentMeta parentPom=null;
 
         Element parent=getSingleElement(top,"parent");
         if(parent!=null) {
 
-            RavenCoordinate pdep=getCoords(rp.properties,parent);
+            trace("parent referenced");
+            HSCoordinate pdep=getCoords(rp.properties,parent);
 
             // is there a relative ref for the parent?
             Element parentRef=getSingleElement(parent,"relativePath");
+            String parentFileLoc;
             if(parentRef!=null) {
-                String parentFileLoc=parentRef.getTextContent();
-                File pr=new File(pom.getParentFile(),parentFileLoc);
-                parentPom=parse(pr);
+                parentFileLoc = parentRef.getTextContent();
             } else {
-                // no parent ref.
-                parentPom=store.resolvePom(pdep);
+                parentFileLoc = "../pom.xml";
             }
-            if(parentPom==null) parentPom=store.resolvePom(pdep);
-            if(parentPom==null) throw new RuntimeException("cannot locate parent ["+pdep+"] pref="+parentRef);
-            rp.parent=parentPom;
+
+            File pr=new File(pom.getParentFile(),parentFileLoc);
+            try {
+                trace("parent location "+pr.getCanonicalPath());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            trace("parent exists = "+pr.exists());
+
+           if(resolveParent) {
+               parentPom = parse(pr);
+               trace("parent returned " + parentPom);
+               if (parentPom == null) parentPom = store.meta(pdep).only();
+               if (parentPom == null)
+                   throw new RuntimeException("cannot locate parent [" + pdep + "] pref=" + parentRef);
+           } else {
+               parentPom=new HSPOMImpl(pdep);
+           }
+             rp.parent=parentPom;
             // add parent coords as parameters to this pom
             rp.properties.addProperty(new RavenPropertyImpl("parent.artifactId",pdep.artifactId(),rp));
             rp.properties.addProperty(new RavenPropertyImpl("parent.groupId",pdep.groupId(),rp));
@@ -189,7 +215,7 @@ public class POMFileParser {
             // link properties together
             rp.properties.parent(rp.parent.properties());
         }
-        rp.coordinates=getCoords(rp.properties,top);
+        rp.coordinates(getCoords(rp.properties,top));
 
 
 
@@ -197,10 +223,12 @@ public class POMFileParser {
         Element dependencies=getSingleElement(top,"dependencies");
         if(dependencies!=null) {
             List<Element> deps=getKids(dependencies,"dependency");
+            trace("discovered "+deps.size()+" dependencies");
             for(Element e:deps) {
-                RavenCoordinate rc=getCoords(rp.properties,e);
-                RavenDependency rd=store.resolveDependency(rc);
-                rp.dependencies.add(rd);
+                HSCoordinate rc=getCoords(rp.properties,e);
+                trace("coordinate "+rc);
+                HSComponentMetaSet rd=store.meta(rc);
+                rp.dependencies.addAll(rd);
             }
         }
 
@@ -209,12 +237,13 @@ public class POMFileParser {
 
     }
 
+
     private static class RavenPropertyImpl implements RavenProperty {
         private final String key;
         private final String value;
-        private final RavenPOM owner;
+        private final HSComponentMeta owner;
 
-        public RavenPropertyImpl(String key, String value, RavenPOM owner) {
+        public RavenPropertyImpl(String key, String value, HSComponentMeta owner) {
             this.key = key;
             this.value = value;
             this.owner = owner;
@@ -231,7 +260,7 @@ public class POMFileParser {
         }
 
         @Override
-        public RavenPOM source() {
+        public HSComponentMeta source() {
             return owner;
         }
 

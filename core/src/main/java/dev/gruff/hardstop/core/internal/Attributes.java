@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core.internal;
 
 import dev.gruff.hardstop.core.impl.HSClassImpl;
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,8 +10,8 @@ import java.util.TreeMap;
 
 public class Attributes {
 
-    private Map<String, RavenClass.Attribute> attributeByName = new TreeMap<>();
-    private List<RavenClass.Attribute> attributes = new LinkedList<>();
+    private Map<String, HSClass.Attribute> attributeByName = new TreeMap<>();
+    private List<HSClass.Attribute> attributes = new LinkedList<>();
 
     public Attributes() {
 

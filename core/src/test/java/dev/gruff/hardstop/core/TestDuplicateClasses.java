@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core;
 
 import dev.gruff.hardstop.core.builder.ComponentLoader;
-import dev.gruff.hardstop.api.RavenComponent;
+import dev.gruff.hardstop.api.HSComponent;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -17,7 +17,7 @@ public class TestDuplicateClasses {
         f=new File(f,"repository/junit");
 
         ComponentLoader mb=new ComponentLoader();
-        RavenComponent model=mb.addRoot(f).build();
+        HSComponent model=mb.addRoot(f).build();
 
         ReportDuplicateClasses rdc=new ReportDuplicateClasses();
        // rdc.report(model);

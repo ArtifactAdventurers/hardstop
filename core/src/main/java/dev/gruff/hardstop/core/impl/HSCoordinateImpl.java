@@ -1,16 +1,16 @@
 package dev.gruff.hardstop.core.impl;
 
-import dev.gruff.hardstop.api.RavenCoordinate;
+import dev.gruff.hardstop.api.HSCoordinate;
 
-public class HSCoordinateImpl implements RavenCoordinate {
+public class HSCoordinateImpl implements HSCoordinate {
     private final String finalA;
     private final String finalG;
     private final String finalV;
 
-    public HSCoordinateImpl(String finalA, String finalG, String finalV) {
-        this.finalA = finalA;
-        this.finalG = finalG;
-        this.finalV = finalV;
+    public HSCoordinateImpl(String groupId, String artifactId, String version) {
+        this.finalA = artifactId;
+        this.finalG = groupId;
+        this.finalV = version;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class HSCoordinateImpl implements RavenCoordinate {
     }
 
     @Override
-    public int compareTo(RavenCoordinate o) {
+    public int compareTo(HSCoordinate o) {
 
         int g=this.groupId().compareTo(o.groupId());
         if(g!=0) return g;

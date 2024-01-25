@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core.impl;
 
 import dev.gruff.hardstop.api.RavenPropertySet;
-import dev.gruff.hardstop.api.RavenPOM;
+import dev.gruff.hardstop.api.HSComponentMeta;
 import dev.gruff.hardstop.api.RavenProperty;
 
 import java.util.Collections;
@@ -28,7 +28,7 @@ public class RavenPropertySetImpl implements RavenPropertySet {
             }
 
             @Override
-            public RavenPOM source() {
+            public HSComponentMeta source() {
                 return null;
             }
         };

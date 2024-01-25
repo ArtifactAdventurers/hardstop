@@ -6,7 +6,7 @@ import dev.gruff.hardstop.api.cfp.testdata.SimplestClass17;
 import dev.gruff.hardstop.api.cfp.testdata.SimplestEnum17;
 import dev.gruff.hardstop.api.cfp.testdata.SimplestInterface17;
 import dev.gruff.hardstop.core.builder.ComponentLoader;
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class TestSimpleParsing17 {
 
     @Test
     public void testParseSimpleClass() throws IOException {
-       RavenClass z = ComponentLoader.readClass(SimplestClass17.class);
+       HSClass z = ComponentLoader.readClass(SimplestClass17.class);
         assertEquals("17", z.compilerVersion());
         assertTrue(z.isClass());
         assertTrue(z.isPublic());
@@ -30,7 +30,7 @@ public class TestSimpleParsing17 {
     @Test
     public void testParseSimpleInterface() throws IOException {
 
-        RavenClass z = ComponentLoader.readClass(SimplestInterface17.class);
+        HSClass z = ComponentLoader.readClass(SimplestInterface17.class);
         assertEquals("17", z.compilerVersion());
         assertTrue(z.isInterface());
         assertTrue(z.isPublic());
@@ -41,7 +41,7 @@ public class TestSimpleParsing17 {
 
     @Test
     public void testParseSimpleEnum() throws IOException {
-        RavenClass z = ComponentLoader.readClass(SimplestEnum17.class);
+        HSClass z = ComponentLoader.readClass(SimplestEnum17.class);
           assertEquals("17", z.compilerVersion());
           assertTrue(z.isEnum());
           assertTrue(z.isPublic());

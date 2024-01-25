@@ -2,7 +2,7 @@ package dev.gruff.hardstop.core;
 
 
 
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 import dev.gruff.hardstop.api.clazz.AccessFlagInspector;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +17,7 @@ public class TestAccessFlagsInspector {
 
     @Test
     public void testClassFlags1() throws IOException {
-            RavenClass rc= TestHelper.getClass(PublicClass.class);
+            HSClass rc= TestHelper.getClass(PublicClass.class);
             Set<AccessFlagInspector.ClassFlag> f=rc.accessFlags();
             assertTrue(f.contains(AccessFlagInspector.ClassFlag.ACC_PUBLIC));
 
@@ -25,7 +25,7 @@ public class TestAccessFlagsInspector {
 
     @Test
     public void testClassFlags2() throws IOException {
-        RavenClass rc=TestHelper.getClass(FinalClass.class);
+        HSClass rc=TestHelper.getClass(FinalClass.class);
         Set<AccessFlagInspector.ClassFlag> f=rc.accessFlags();
         assertTrue(f.contains(AccessFlagInspector.ClassFlag.ACC_FINAL));
 
@@ -34,7 +34,7 @@ public class TestAccessFlagsInspector {
 
     @Test
     public void testClassFlags3() throws IOException {
-        RavenClass rc=TestHelper.getClass(AbstractClass.class);
+        HSClass rc=TestHelper.getClass(AbstractClass.class);
         Set<AccessFlagInspector.ClassFlag> f=rc.accessFlags();
         assertTrue(f.contains(AccessFlagInspector.ClassFlag.ACC_ABSTRACT));
 
@@ -61,7 +61,7 @@ public class TestAccessFlagsInspector {
 
     @Test
     public void testClassFlagsPublic() throws IOException {
-        RavenClass rc=TestHelper.getClass(PrivateClass.class);
+        HSClass rc=TestHelper.getClass(PrivateClass.class);
         Set<AccessFlagInspector.ClassFlag> f=rc.accessFlags();
         System.out.println(f);
         assertFalse(f.contains(AccessFlagInspector.ClassFlag.ACC_PUBLIC));
@@ -70,7 +70,7 @@ public class TestAccessFlagsInspector {
 
     @Test
     public void testClassFlagsProtected() throws IOException {
-        RavenClass rc=TestHelper.getClass(ProtectedClass.class);
+        HSClass rc=TestHelper.getClass(ProtectedClass.class);
         Set<AccessFlagInspector.ClassFlag> f=rc.accessFlags();
         assertTrue(rc.isInnerClass());
         assertTrue(f.contains(AccessFlagInspector.ClassFlag.ACC_PUBLIC));
@@ -80,7 +80,7 @@ public class TestAccessFlagsInspector {
 
     @Test
     public void testClassFlags6() throws IOException {
-        RavenClass rc=TestHelper.getClass(NoClass.class);
+        HSClass rc=TestHelper.getClass(NoClass.class);
         Set<AccessFlagInspector.ClassFlag> f=rc.accessFlags();
         System.out.println(f);
         assertFalse(f.contains(AccessFlagInspector.ClassFlag.ACC_PUBLIC));

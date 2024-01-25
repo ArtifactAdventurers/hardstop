@@ -1,6 +1,6 @@
 package dev.gruff.hardstop.core.internal;
 
-import dev.gruff.hardstop.core.impl.RavenPOMImpl;
+import dev.gruff.hardstop.core.impl.HSPOMImpl;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,7 +24,7 @@ public class POMReader {
 
     }
 
-    public RavenPOMImpl read(File f) throws IOException, SAXException {
+    public HSPOMImpl read(File f) throws IOException, SAXException {
         Document doc = db.parse(f);
         Element top = doc.getDocumentElement();
 
@@ -32,7 +32,7 @@ public class POMReader {
         top.normalize();
 
         if (top.getNodeName().equals("project")) {
-            RavenPOMImpl pom=new RavenPOMImpl(f);
+            HSPOMImpl pom=new HSPOMImpl(new FileArtifactRef(f));
             loadParent(pom,top);
 
         } else {
@@ -42,7 +42,7 @@ public class POMReader {
         return null;
     }
 
-    private void loadParent(RavenPOMImpl pom, Element project) {
+    private void loadParent(HSPOMImpl pom, Element project) {
 
         Element parent=getSingleElement(project,"parent");
         if(parent!=null) {

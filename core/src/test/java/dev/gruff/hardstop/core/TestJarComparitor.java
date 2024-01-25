@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core;
 
-import dev.gruff.hardstop.api.RavenClass;
-import dev.gruff.hardstop.api.RavenComponent;
+import dev.gruff.hardstop.api.HSClass;
+import dev.gruff.hardstop.api.HSComponent;
 import dev.gruff.hardstop.api.clazz.AccessFlagInspector;
 import dev.gruff.hardstop.core.builder.ComponentLoader;
 import dev.gruff.hardstop.core.internal.Utils;
@@ -16,45 +16,10 @@ public class TestJarComparitor {
 
     @Test
     public void testJars() throws IOException {
-        File f=new File(System.getProperty("user.home"));
-        f=new File(f,".m2");
-        File f1=new File(f,"repository/junit/junit/3.8.1/junit-3.8.1.jar");
-        File f2=new File(f,"repository/junit/junit/4.4/junit-4.4.jar");
 
-        ComponentLoader mb=new ComponentLoader();
-        RavenComponent first=mb.addRoot(f1).build();
-
-        Set<String> classNames1=first.classNames();
-        System.out.println(classNames1.size());
-
-        RavenComponent second=mb.addRoot(f2).build();
-        Set<String> classNames2=second.classNames();
-        System.out.println(classNames2.size());
-
-       Set<String> common=new TreeSet<>();
-       classNames1.forEach(s ->{ if( classNames2.contains(s)) common.add(s);});
-       System.out.println("common "+common.size());
-
-       int unchanged=0;
-       int changed=0;
-
-       for(String s:common) {
-           RavenClass r1=first.classInstance(s);
-           RavenClass r2=second.classInstance(s);
-           if(!r1.digest().equals(r2.digest())) {
-       changed++;
-            System.out.println(s);
-            classCompare(r1,r2);
-           } else {
-               unchanged++;
-           }
-       }
-
-       System.out.println("unchanged "+unchanged);
-        System.out.println("changed "+changed);
     }
 
-    private void classCompare(RavenClass r1, RavenClass r2) {
+    private void classCompare(HSClass r1, HSClass r2) {
 
         AccessFlagInspector.ClassFlagDiff fd=AccessFlagInspector.compare(r1.accessFlags(),r2.accessFlags());
 
@@ -84,11 +49,11 @@ public class TestJarComparitor {
 
     }
 
-    private static void compareFields(RavenClass r1, RavenClass r2,String diff) {
-        for (RavenClass.Field field : r1.fields()) {
+    private static void compareFields(HSClass r1, HSClass r2, String diff) {
+        for (HSClass.Field field : r1.fields()) {
             String ref = field.reference();
             if (r2.hasField(ref)) {
-                RavenClass.Field field2 = r2.field(ref);
+                HSClass.Field field2 = r2.field(ref);
                 int fa1 = field.accessFlags();
                 int fa2 = field2.accessFlags();
                 if (fa1 != fa2) {
@@ -100,11 +65,11 @@ public class TestJarComparitor {
         }
     }
 
-    private static void compareMethods(RavenClass r1, RavenClass r2,String diff) {
-        for (RavenClass.Method method : r1.methods()) {
+    private static void compareMethods(HSClass r1, HSClass r2, String diff) {
+        for (HSClass.Method method : r1.methods()) {
             String ref = method.reference();
             if (r2.hasMethod(ref)) {
-                RavenClass.Method method2 = r2.method(ref);
+                HSClass.Method method2 = r2.method(ref);
                 int fa1 =  method.accessFlags();
                 int fa2 = method2.accessFlags();
                 if (fa1 != fa2) {

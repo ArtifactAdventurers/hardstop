@@ -1,8 +1,7 @@
 package dev.gruff.hardstop.core.builder;
 
-import dev.gruff.hardstop.api.RavenArtifactSource;
-import dev.gruff.hardstop.api.RavenCoordinate;
-import dev.gruff.hardstop.api.RavenPOM;
+import dev.gruff.hardstop.api.*;
+import dev.gruff.hardstop.core.impl.HSComponentMetaSetImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,12 +13,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class MavenProjectSource implements RavenArtifactSource {
+public class MavenProjectSource implements HSArtifactSource {
 
     protected static final Logger LOG = LogManager.getLogger();
     private File root=null;
-    private Map<RavenCoordinate,RavenPOM> cache=null;
+    private Map<HSCoordinate, HSComponentMetaSetImpl> cache=null;
 
+    public String toString() {
+        return root.getAbsolutePath();
+    }
     private Map<String,File> candidates=new HashMap<>();
     public MavenProjectSource(File p) {
         if(p==null) throw new RuntimeException("root is null");
@@ -30,32 +32,36 @@ public class MavenProjectSource implements RavenArtifactSource {
     }
 
     @Override
-    public RavenPOM pom(RavenCoordinate pdep) {
+    public HSComponentMetaSet meta(HSCoordinate pdep) {
 
-        if(pdep==null) throw new RuntimeException("coordinate is null");
-        Map<RavenCoordinate,RavenPOM> data=getCache();
-        if(!data.containsKey(pdep)) {
-            data.keySet().forEach(System.out::println);
-        }
-        return data.get(pdep);
+        Map<HSCoordinate, HSComponentMetaSetImpl> data=getCache();
+        HSComponentMetaSet result=data.get(pdep);
+        if(result==null) result=new HSComponentMetaSetImpl();
+
+        return result;
     }
 
-    private synchronized Map<RavenCoordinate, RavenPOM> getCache() {
+    @Override
+    public HSComponentSet components(HSCoordinate pdep) {
+        throw new RuntimeException("fixme ");
+    }
+
+    private synchronized Map<HSCoordinate, HSComponentMetaSetImpl> getCache() {
         if(cache!=null) return cache;
         cache=new TreeMap<>();
         buildCache(root);
         return cache;
     }
 
-    private RavenPOM toPOM(File f) {
+    private HSComponentMeta toPOM(File f) {
             LOG.debug("toPOM for ["+f.getAbsolutePath()+"]");
-            RavenPOM rp= POMLoader.loader().fileOnly(f);
+            HSComponentMeta rp= POMLoader.loader().fileOnly(f);
             if(rp==null) {
                 LOG.info("No POM for ["+f.getAbsolutePath()+"]");
             } else {
                 LOG.debug("created POM " + rp.coordinates());
             }
-            //System.out.println(f.getAbsolutePath()+ "-> "+rp.coordinates());
+            System.out.println(f.getAbsolutePath()+ "-> "+rp.coordinates());
             return rp;
 
     }
@@ -68,17 +74,22 @@ public class MavenProjectSource implements RavenArtifactSource {
                     .parallel()
                     .filter(File::isFile)
                     .filter(f -> f.getName().equals("pom.xml"))
-                    .map(this::toPOM)
-                    .forEach(p -> {
-                        if(p!=null)
-                        cache.put(p.coordinates(),p);
+                     .forEach( this::savePOM);
 
-                    });
             LOG.info("build cache for ["+root.getAbsolutePath()+"] with "+cache.size()+" entries");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
 
+    }
+
+    private void savePOM(File f) {
+
+        HSComponentMeta p=toPOM(f);
+        if(p!=null) {
+            HSComponentMetaSetImpl ms = cache.computeIfAbsent(p.coordinates(), k -> new HSComponentMetaSetImpl());
+            ms.add(p);
+        }
     }
 }

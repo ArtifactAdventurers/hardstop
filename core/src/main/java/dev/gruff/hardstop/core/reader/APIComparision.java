@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core.reader;
 
 
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 
 public class APIComparision {
 
@@ -10,7 +10,7 @@ public class APIComparision {
 
     }
 
-    public void compare(RavenClass a, RavenClass b) {
+    public void compare(HSClass a, HSClass b) {
 
         // compare versions ...
       String v1= a.compilerVersion();

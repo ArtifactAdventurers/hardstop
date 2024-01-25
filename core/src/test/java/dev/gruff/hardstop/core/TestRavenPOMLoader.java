@@ -1,12 +1,14 @@
 package dev.gruff.hardstop.core;
 
+import dev.gruff.hardstop.api.HSComponentMetaSet;
 import dev.gruff.hardstop.core.builder.POMLoader;
-import dev.gruff.hardstop.api.RavenCoordinate;
-import dev.gruff.hardstop.api.RavenDependencySet;
-import dev.gruff.hardstop.api.RavenPOM;
+import dev.gruff.hardstop.api.HSCoordinate;
+import dev.gruff.hardstop.api.HSComponentSet;
+import dev.gruff.hardstop.api.HSComponentMeta;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,10 +19,12 @@ public class TestRavenPOMLoader {
     public void testSimpleCoordinatesNoParent() {
 
         File pom=new File("target/test-classes/p1/pom.xml");
-        RavenPOM rp= POMLoader.loader()
+        HSComponentMeta rp= POMLoader.loader()
+                .excludeLocalCache(true)
+                .excludeRemoteCache(true)
                 .load(pom);
 
-        RavenCoordinate rc=rp.coordinates();
+        HSCoordinate rc=rp.coordinates();
 
         assertEquals("P1",rc.artifactId());
         assertEquals("testo",rc.groupId());
@@ -31,17 +35,19 @@ public class TestRavenPOMLoader {
     public void testSimpleDepsNoParent() {
 
         File pom=new File("target/test-classes/p1/pom.xml");
-        RavenPOM rp= POMLoader.loader()
+        HSComponentMeta rp= POMLoader.loader()
+                .excludeLocalCache(true)
+                .excludeRemoteCache(true)
+              //  .trace(true)
                 .load(pom);
 
-        RavenDependencySet rds=rp.dependencies();
+        HSComponentMetaSet rds=rp.dependencies();
 
         assertEquals(1,rds.size());
 
-        rds.forEach( rd -> {
-            RavenCoordinate rc=rd.coordinates();
-            assertEquals("junit-jupiter-engine",rc.artifactId());
-        });
+         HSCoordinate rc=rds.only().coordinates();
+        assertEquals("junit-jupiter-engine",rc.artifactId());
+
 
 
     }
@@ -50,14 +56,17 @@ public class TestRavenPOMLoader {
     public void testSimpleDepsWithParent() {
 
         File pom=new File("target/test-classes/p1/p2/pom.xml");
-        RavenPOM rp= POMLoader.loader()
+        HSComponentMeta rp= POMLoader.loader()
+                .excludeLocalCache(true)
+                .excludeRemoteCache(true)
+                .trace(true)
                 .projectRoot(new File("target/test-classes"))
 
                 .load(pom);
 
-       RavenPOM parent=rp.parent();
+       HSComponentMeta parent=rp.parent();
 
-       RavenCoordinate coods=parent.coordinates();
+       HSCoordinate coods=parent.coordinates();
 
        assertEquals("testo",coods.groupId());
 

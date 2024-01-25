@@ -1,6 +1,6 @@
 package dev.gruff.hardstop.api;
 
-public interface RavenCoordinate extends Comparable<RavenCoordinate>{
+public interface HSCoordinate extends Comparable<HSCoordinate>{
 
     public String artifactId();
     public String groupId();

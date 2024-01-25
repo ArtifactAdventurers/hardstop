@@ -1,16 +1,16 @@
 package dev.gruff.hardstop.core.impl;
 
-import dev.gruff.hardstop.api.RavenContainer;
+import dev.gruff.hardstop.api.HSContainer;
 
 
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class HSContainerImpl implements RavenContainer {
+public class HSContainerImpl implements HSContainer {
 
 
-    private final Map<String, RavenPackageImpl> packages=new TreeMap<>();
+    private final Map<String, HSPackageImpl> packages=new TreeMap<>();
     private Path root;
 
     HSContainerImpl(Path ref) {
@@ -27,8 +27,8 @@ public class HSContainerImpl implements RavenContainer {
     }
 
 
-    public RavenPackageImpl addClass(String packageName, HSClassImpl rci) {
-        RavenPackageImpl r= packages.computeIfAbsent(packageName, f-> new RavenPackageImpl(this,packageName));
+    public HSPackageImpl addClass(String packageName, HSClassImpl rci) {
+        HSPackageImpl r= packages.computeIfAbsent(packageName, f-> new HSPackageImpl(this,packageName));
         r.addClass(rci);
         return r;
     }

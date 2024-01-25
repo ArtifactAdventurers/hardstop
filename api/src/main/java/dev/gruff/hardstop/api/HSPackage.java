@@ -4,13 +4,13 @@ import java.util.Collection;
 import java.util.Set;
 
 public interface HSPackage {
-    RavenContainer container();
+    HSContainer container();
 
     String name();
 
     int classCount();
 
-    Collection<RavenClass> classes();
+    Collection<HSClass> classes();
 
     Set<String> classNames();
 }

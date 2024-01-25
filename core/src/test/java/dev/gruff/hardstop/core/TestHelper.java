@@ -1,7 +1,7 @@
 package dev.gruff.hardstop.core;
 
 import dev.gruff.hardstop.core.builder.ComponentLoader;
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,7 +38,7 @@ public class TestHelper {
 
     }
 
-    public static RavenClass getClass(Class clazz) throws IOException {
+    public static HSClass getClass(Class clazz) throws IOException {
         try (InputStream is = getInputStream(clazz)) {
             return ComponentLoader.readClass(is);
         }

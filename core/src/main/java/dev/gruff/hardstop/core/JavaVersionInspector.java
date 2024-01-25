@@ -1,11 +1,11 @@
 package dev.gruff.hardstop.core;
 
-import dev.gruff.hardstop.api.RavenClass;
+import dev.gruff.hardstop.api.HSClass;
 
 public class JavaVersionInspector {
 
 
-    public static String version(RavenClass rrc) {
+    public static String version(HSClass rrc) {
         return version(rrc.major(),rrc.minor());
     }
 

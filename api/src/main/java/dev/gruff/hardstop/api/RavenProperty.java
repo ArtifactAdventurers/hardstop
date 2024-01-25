@@ -4,6 +4,6 @@ public interface RavenProperty {
 
     String key();
     String value();
-    RavenPOM source();
+    HSComponentMeta source();
 
 }
