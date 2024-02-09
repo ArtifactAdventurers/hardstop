@@ -1,29 +1,32 @@
 package dev.gruff.hardstop.core;
 
 import dev.gruff.hardstop.api.HSClass;
+import dev.gruff.hardstop.api.SemanticVersion;
+import dev.gruff.hardstop.core.impl.SemanticVersionImpl;
 
 public class JavaVersionInspector {
 
 
-    public static String version(HSClass rrc) {
+    public static SemanticVersion version(HSClass rrc) {
         return version(rrc.major(),rrc.minor());
     }
 
 
 
-    private static String version(int major,int minor) {
-        if (major < 45 || major > 200) return "invalid";
+    private static SemanticVersion version(int major,int minor) {
+        if (major < 45 || major > 200) return new SemanticVersionImpl(0,major,minor);
         if (major > 48) {
             if (major < 51) {
-                if (major == 50) return "6.0";
-                else return "5.0";
+                if (major == 50) return new SemanticVersionImpl(6,0,0);
+                else return new SemanticVersionImpl(5,0,0);
             } else {
                 int dv = (major - 51) + 7;
-                return "" + dv;
+                return new SemanticVersionImpl(dv,0,0);
             }
         } else {
             int dv = major - 44;
-            return "1." + dv;
+            return new SemanticVersionImpl(1,dv,0);
+
         }
     }
 }

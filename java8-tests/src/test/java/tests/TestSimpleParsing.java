@@ -2,7 +2,9 @@ package tests;
 
 
 import dev.gruff.hardstop.core.JavaVersionInspector;
+import dev.gruff.hardstop.core.builder.ClassReader;
 import dev.gruff.hardstop.core.builder.ComponentLoader;
+import dev.gruff.hardstop.testsupport.TestHelper;
 import org.junit.jupiter.api.Test;
 import testdata.SimplestClass8;
 import testdata.SimplestEnum8;
@@ -19,8 +21,9 @@ public class TestSimpleParsing {
     @Test
     public void testParseSimpleClass() throws IOException {
 
-        HSClass z= ComponentLoader.readClass(SimplestClass8.class);
-        assertEquals("8", JavaVersionInspector.version(z));
+        HSClass z= ClassReader.readClass(TestHelper.getFile(SimplestClass8.class));
+
+        assertEquals("8.0.0", JavaVersionInspector.version(z).toString());
         assertTrue(z.isClass());
         assertTrue(z.isPublic());
         assertFalse(z.isFinal());
@@ -29,8 +32,9 @@ public class TestSimpleParsing {
 
     @Test
     public void testParseSimpleInterface() throws IOException {
-        HSClass z= ComponentLoader.readClass(SimplestInterface8.class);
-       assertEquals("8", JavaVersionInspector.version(z));
+
+        HSClass z= ClassReader.readClass(TestHelper.getFile(SimplestInterface8.class));
+       assertEquals("8.0.0", JavaVersionInspector.version(z).toString());
         assertTrue(z.isInterface());
 
     }
@@ -38,8 +42,9 @@ public class TestSimpleParsing {
 
     @Test
     public void testParseSimpleEnum() throws IOException {
-        HSClass z= ComponentLoader.readClass(SimplestEnum8.class);
-        assertEquals("8", JavaVersionInspector.version(z));
+        HSClass z= ClassReader.readClass(TestHelper.getFile(SimplestEnum8.class));
+
+        assertEquals("8.0.0", JavaVersionInspector.version(z).toString());
         assertTrue(z.isEnum());
     }
 }

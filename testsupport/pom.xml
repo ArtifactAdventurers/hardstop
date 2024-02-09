@@ -9,36 +9,20 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>java8-tests</artifactId>
+    <artifactId>testsupport</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-
     <dependencies>
         <dependency>
-
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.10.0</version>
-            <scope>test</scope>
-
-
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.14.2</version>
         </dependency>
-        <dependency>
-            <groupId>dev.gruff.hardstop</groupId>
-            <artifactId>core</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>dev.gruff.hardstop</groupId>
-            <artifactId>testsupport</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
+
 
 </project>

@@ -13,6 +13,7 @@ public interface HSClass {
     String className();
     String packageName();
 
+    Type type();
     boolean isClass();
 
     boolean isEnum();
@@ -26,7 +27,7 @@ public interface HSClass {
 
     HSContainer container();
 
-    public String compilerVersion();
+    public SemanticVersion compilerVersion();
 
     Collection<Field> fields();
 
@@ -53,7 +54,9 @@ public interface HSClass {
 
     String superClassName();
 
-    public interface Method {
+  boolean isAbstract();
+
+  public interface Method {
     String descriptor();
     String name();
 
@@ -76,5 +79,9 @@ public interface HSClass {
 
   public interface Attribute {
 
+  }
+
+  public static enum Type {
+    CLASS,INTERFACE,ENUM
   }
 }

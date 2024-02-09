@@ -1,5 +1,6 @@
 package dev.gruff.hardstop.core.impl;
 
+import dev.gruff.hardstop.api.SemanticVersion;
 import dev.gruff.hardstop.api.clazz.AccessFlagInspector;
 import dev.gruff.hardstop.core.JavaVersionInspector;
 import dev.gruff.hardstop.core.internal.ConstantPool;
@@ -32,7 +33,7 @@ public class HSClassImpl implements HSClass {
     byte[] digest;
 
     private HSContainerImpl container;
-    public String compilerVersion() {
+    public SemanticVersion compilerVersion() {
         return JavaVersionInspector.version(this);
     }
 
@@ -110,6 +111,13 @@ public class HSClassImpl implements HSClass {
         return Utils.packageName(className());
     }
 
+    @Override
+    public Type type() {
+        if(isInterface()) return Type.INTERFACE;
+        if(isEnum()) return Type.ENUM;
+        return Type.CLASS;
+    }
+
     public String[] interfaceNames() {
 
         String[] data=new String[interfaces_count];
@@ -130,6 +138,10 @@ public class HSClassImpl implements HSClass {
         return null;
     }
 
+    @Override
+    public boolean isAbstract() {
+        return (accessFlags & 0x0400) == 0x0400;
+    }
 
 
     public boolean isClass() {

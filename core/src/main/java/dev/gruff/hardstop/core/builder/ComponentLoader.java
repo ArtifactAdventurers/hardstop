@@ -221,17 +221,5 @@ public class ComponentLoader {
         return this;
     }
 
-    public static HSClass readClass(InputStream is) throws IOException {
-        return new ClassFileReaderImpl(false).parse(is);
-    }
 
-
-    public static HSClass readClass(Class cl) throws IOException {
-        String rc=cl.getCanonicalName();
-        rc=rc.replace(".","/");
-        rc="/"+rc+".class";
-        InputStream is=cl.getResourceAsStream(rc);
-        if(is==null) throw new ParseException("cannot locate resource ["+rc+"]");
-        return new ClassFileReaderImpl(false).parse(is);
-    }
 }

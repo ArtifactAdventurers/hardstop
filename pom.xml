@@ -14,6 +14,7 @@
         <module>java16-tests</module>
         <module>java17-tests</module>
         <module>anz</module>
+        <module>testsupport</module>
     </modules>
 
     <properties>
